@@ -1,19 +1,22 @@
 import "dart:convert";
+import "package:flutter/cupertino.dart";
 import "package:http/http.dart" as http;
 import 'package:taskapp/style/commonStyle.dart';
 import "../utility/sharedPreferences.dart";
 
 
-var baseUrl = "https://task.teamrabbil.com/api/v1";
+var baseUrl = "https://api.dailycash.nasimuddin.me/api";
 var reqHeader = {"Content-Type":"application/json"};
 
 Future<bool>LoginReq(value) async{
-  var URL = Uri.parse("$baseUrl/login");
+  var URL = Uri.parse("${baseUrl}/auth/login");
   var reqBody = jsonEncode(value);
   var res = await http.post(URL, headers: reqHeader, body:reqBody);
+  print("res $res");
   var result = jsonDecode(res.body);
 
-  if(result["status"] == "success"){
+
+  if(result["success"] == true){
     showSuccessToast("Login Success");
     storeLoggedUserData(result);
     return true;
@@ -21,7 +24,6 @@ Future<bool>LoginReq(value) async{
     showErrorToast("Login Fail");
     return false;
   }
-
 }
 
 Future<bool>RegisterReq(value) async{
@@ -52,7 +54,7 @@ Future<bool>VerifyEmailReq(email) async{
     // await storeVerificationEmail(email);
     return true;
   }else{
-    showErrorToast("Request Fail");
+    showErrorToast("VerifyEmail Request Fail");
     return false;
   }
 }
@@ -68,7 +70,7 @@ Future<bool>VerifyOTPReq(otp) async{
     await storeVerificationOTP(otp);
     return true;
   }else{
-    showErrorToast("Request Fail");
+    showErrorToast("VerifyOTP Request Fail");
     return false;
   }
 
@@ -80,14 +82,18 @@ Future<List>GetTaskReq(Status) async{
   String? token = await getStoreData("token");
   var reqHeaderWithToken = {"Content-Type":"application/json", "token":'$token'};
 
-  var res = await http.get(URL, headers: reqHeaderWithToken);
-  var result = jsonDecode(res.body);
+  try{
+    var res = await http.get(URL, headers: reqHeaderWithToken);
+    var result = jsonDecode(res.body);
 
-  if(result["status"] == "success"){
-    return result["data"];
-  }else{
-    showErrorToast("Request Fail");
+    if(result["status"] == true){
+      return result["data"];
+    }else{
+      showErrorToast("GetTask Request Fail");
+      return [];
+    }
+  }catch(e){
+    showErrorToast("GetTask Request Fail from catch");
     return [];
   }
-
 }

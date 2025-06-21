@@ -6,6 +6,7 @@ import 'package:taskapp/screen/onboarding/pinScreen.dart';
 import 'package:taskapp/screen/onboarding/registerScreen.dart';
 import 'package:taskapp/utility/sharedPreferences.dart';
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   var token = await getStoreData("token");
