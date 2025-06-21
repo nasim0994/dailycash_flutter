@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../api/adminApi.dart';
 import '../../layout/AppLayout.dart';
 import '../../style/commonStyle.dart';
+import 'addAccountScreen.dart';
 
 class Accounts extends StatefulWidget {
   const Accounts({super.key});
@@ -168,7 +169,7 @@ class AccountsState extends State<Accounts> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/add-account');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddAccount()),);
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white,),
