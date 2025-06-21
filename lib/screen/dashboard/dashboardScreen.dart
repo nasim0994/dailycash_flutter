@@ -1,69 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../utility/sharedPreferences.dart';
-import '../../components/appBottomNavBar.dart';
 
-import '../../components/newTask.dart';
-import '../../components/canceledTask.dart';
-import '../../components/completedTask.dart';
-import '../../components/progressTask.dart';
+import '../../layout/AppLayout.dart';
 
-
-
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<DashboardScreen> createState() => DashboardScreenState();
+  State<Dashboard> createState() => DashboardState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> {
-  String firstName = "";
-  int bottomTabIndex = 0;
-
-  onItemChangeTab(int index){
-    setState(() {
-      bottomTabIndex = index;
-    });
-  }
-
-  final tabWidgetOptions = [
-    NewTask(),
-    ProgressTask(),
-    CompletedTask(),
-    CanceledTask()
-  ];
-
+class DashboardState extends State<Dashboard> {
   @override
   void initState(){
-    callLoggedUserData();
     super.initState();
   }
 
-  callLoggedUserData()async{
-    var result = await getStoreData("firstName");
-    setState(() {
-      firstName=result ?? "";
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Hello ${firstName}", style: TextStyle(color: Colors.white),),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout,color: Colors.white),
-            onPressed: () async{
-              await clearLoggedUserData();
-              Navigator.pushNamedAndRemoveUntil(context, "/login", (route)=>false);
-            },
-          ),
-        ],
-      ),
-      body: tabWidgetOptions.elementAt(bottomTabIndex),
-      bottomNavigationBar: appBottomNavBar(bottomTabIndex,onItemChangeTab),
+    return AppLayout(
+      title: "Dashboard",
+      currentRoute: '/dashboard',
+      child: const Center(child: Text("Welcome to Dashboard")),
     );
   }
 }

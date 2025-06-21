@@ -3,15 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> storeLoggedUserData(data)async{
   final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setString('token', data["token"]);
-  await prefs.setString('email', data["data"]["email"]);
-  await prefs.setString('firstName', data["data"]["firstName"]);
-  await prefs.setString('lastName', data["data"]["lastName"]);
-  await prefs.setString('mobile', data["data"]["mobile"]);
-  await prefs.setString('photo', data["data"]["photo"]);
+  await prefs.setString('token', data["accessToken"]);
+  await prefs.setString('email', data["user"]["email"]);
+  await prefs.setString('name', data["user"]["name"]);
+  await prefs.setString('role', data["user"]["role"]);
+  await prefs.setString('_id', data["user"]["_id"]);
 
 }
-
 
 Future<String?> getStoreData(key)async{
   final prefs = await SharedPreferences.getInstance();

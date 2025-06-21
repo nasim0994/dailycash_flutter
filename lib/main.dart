@@ -1,10 +1,7 @@
+import 'package:dailycash/screen/dashboard/dashboardScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:taskapp/screen/dashboard/dashboardScreen.dart';
-import 'package:taskapp/screen/onboarding/forgetScreen.dart';
-import 'package:taskapp/screen/onboarding/loginScreen.dart';
-import 'package:taskapp/screen/onboarding/pinScreen.dart';
-import 'package:taskapp/screen/onboarding/registerScreen.dart';
-import 'package:taskapp/utility/sharedPreferences.dart';
+import 'package:dailycash/screen/onboarding/loginScreen.dart';
+import 'package:dailycash/utility/sharedPreferences.dart';
 
 
 void main() async{
@@ -13,7 +10,7 @@ void main() async{
   if(token == null){
     runApp(MyApp("/login"));
   }else{
-    runApp(MyApp("/"));
+    runApp(MyApp("/dashboard"));
   }
 }
 
@@ -27,12 +24,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: FirstRote,
       routes: {
-        "/":(context)=>DashboardScreen(),
+        "/dashboard":(context)=>Dashboard(),
         "/login":(context)=>LoginScreen(),
-        "/register":(context)=>RegisterScreen(),
-        "/forget":(context)=>ForgetScreen(),
-        "/pin-verification":(context)=>PinScreen(),
-
       },
     );
   }

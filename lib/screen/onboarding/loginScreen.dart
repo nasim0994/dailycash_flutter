@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../api/onboardingApi.dart';
 import '../../style/commonStyle.dart';
+import '../../utility/sharedPreferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -32,15 +33,19 @@ class LoginScreenState extends State<LoginScreen> {
     } else if (password == null || password.trim().isEmpty) {
       showErrorToast("Password is required");
     } else {
-      bool res = await LoginReq(FormValue);
-      if(res == true){
-        Navigator.pushNamedAndRemoveUntil(context, "/", (route)=>false);
+      Map res = await LoginReq(FormValue);
+      if(res["success"] == true){
+        showSuccessToast("Login success");
+        storeLoggedUserData(res["data"]);
+        setState(() => isLoading = false);
+        Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route)=>false);
+      }else{
+        showErrorToast(res["message"]);
+        setState(() => isLoading = false);
       }
     }
-
     setState(() => isLoading = false);
   }
-
 
   @override
   Widget build(BuildContext context) {
