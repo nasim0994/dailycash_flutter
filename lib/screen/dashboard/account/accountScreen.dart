@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../api/adminApi.dart';
-import '../../layout/AppLayout.dart';
-import '../../style/commonStyle.dart';
+import '../../../api/adminApi.dart';
+import '../../../layout/AppLayout.dart';
+import '../../../style/commonStyle.dart';
 import 'addAccountScreen.dart';
 
 class Accounts extends StatefulWidget {

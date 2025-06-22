@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../screen/dashboard/accountScreen.dart';
+import '../screen/dashboard/account/accountScreen.dart';
 import '../screen/dashboard/dashboardScreen.dart';
 
 class AppBottomNavBar extends StatelessWidget {

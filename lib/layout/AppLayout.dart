@@ -24,7 +24,10 @@ class AppLayout extends StatelessWidget {
       appBar: AppBar(
         title: Text(title, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
-        actions: actions,
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(onPressed: (){}, icon: Icon(Icons.logout))
+        ],
       ),
       body: child,
       bottomNavigationBar: AppBottomNavBar(currentRoute: currentRoute),
