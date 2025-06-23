@@ -47,3 +47,42 @@ Future<Map>addCashInReq(formValue) async{
   var result = jsonDecode(res.body);
   return result;
 }
+
+Future<Map>getCashInReq() async{
+  var URL = Uri.parse("${baseUrl}/cash-in/all");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var res = await http.get(URL, headers: reqHeader);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
+Future<Map>getCashInByIdReq(id) async{
+  var URL = Uri.parse("${baseUrl}/cash-in/$id");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var res = await http.get(URL, headers: reqHeader);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
+Future<Map>editCashInReq(id,formValue) async{
+  var URL = Uri.parse("${baseUrl}/cash-in/update/$id");
+  var token = await getStoreData("token");
+  var userId = await getStoreData("_id");
+  formValue["addedBy"] = userId;
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var reqBody = jsonEncode(formValue);
+  var res = await http.put(URL, headers: reqHeader, body:reqBody);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
+Future<Map>deleteCashInReq(id) async{
+  var URL = Uri.parse("${baseUrl}/cash-in/delete/$id");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var res = await http.delete(URL, headers: reqHeader,);
+  var result = jsonDecode(res.body);
+  return result;
+}

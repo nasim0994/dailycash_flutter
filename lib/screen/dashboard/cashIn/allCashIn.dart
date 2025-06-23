@@ -1,43 +1,89 @@
+import 'package:dailycash/api/adminApi.dart';
 import 'package:dailycash/screen/dashboard/cashIn/addCashInScreen.dart';
+import 'package:dailycash/screen/dashboard/cashIn/editCashInScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../layout/AppLayout.dart';
+import '../../../style/commonStyle.dart';
 
 class AllCashIn extends StatefulWidget {
   const AllCashIn({super.key});
-
   @override
   State<AllCashIn> createState() => _AllCashInState();
 }
 
 class _AllCashInState extends State<AllCashIn> {
-  final List<Map<String, dynamic>> cashInList = [
-    {
-      "note": "Travello App",
-      "date": "2025-06-21",
-      "amount": 4946.0,
-      "account": "Cash",
-      "addedBy":"Nasim"
-    },
-    {
-      "note": "Creative Studios",
-      "date": "2025-06-20",
-      "amount": 5428.0,
-      "account": "Bank - DBBL",
-      "addedBy":"Nahida"
-    },
-    {
-      "note": "Book Hub Society",
-      "date": "2025-06-19",
-      "amount": 2876.0,
-      "account": "Mobile Banking - bKash",
-      "addedBy":"Nasim"
-    },
-  ];
+  List cashInList = [];
+  bool isLoading = true;
+
+  @override
+  void initState(){
+    super.initState();
+    loadCashIn();
+  }
+
+  Future<void>loadCashIn()async{
+    Map res = await getCashInReq();
+    if(res["success"] == true){
+      setState(() {
+        isLoading = false;
+        cashInList=res["data"];
+      });
+    }else{
+      showErrorToast(res["message"]);
+      setState(() => isLoading = false);
+    }
+  }
 
   String formatDate(String date) {
     DateTime parsedDate = DateTime.parse(date);
     return DateFormat('dd - MM - yy').format(parsedDate);
+  }
+
+  Future<void> handleDelete(Map cashIn) async {
+    bool isDeleteLoading = false;
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: const Text('Delete CashIn'),
+              content: isDeleteLoading
+                  ? const SizedBox(height: 50, child: Center(child: CircularProgressIndicator()))
+                  : Text("Are you sure to delete this CashIn?"),
+              actions: isDeleteLoading
+                  ? []
+                  : [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Cancel")),
+                TextButton(
+                  onPressed: () async {
+                    setStateDialog(() => isDeleteLoading = true);
+                    Map res = await deleteCashInReq(cashIn['_id']);
+
+                    if (res["success"] == true) {
+                      showSuccessToast("CashIn deleted");
+                      setState(() {
+                        cashInList.removeWhere((item) => item["_id"] == cashIn["_id"]);
+                      });
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    } else {
+                      showErrorToast(res["message"]);
+                      setStateDialog(() => isDeleteLoading = false);
+                    }
+                  },
+                  child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   void showDetailsBottomSheet(Map<String, dynamic> data) {
@@ -112,8 +158,19 @@ class _AllCashInState extends State<AllCashIn> {
                     Expanded(
                       flex: 50,
                       child: ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async{
                           Navigator.pop(context);
+                          final shouldReload = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditCashIn(
+                                cashInId: data["_id"],
+                              ),
+                            ),
+                          );
+                          if (shouldReload == true) {
+                            await loadCashIn();
+                          };
                         },
                         icon: const Icon(Icons.edit, color: Colors.white),
                         label: const Text("Edit", style: TextStyle(color: Colors.white)),
@@ -129,7 +186,7 @@ class _AllCashInState extends State<AllCashIn> {
                       flex: 50,
                       child:ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.pop(context);
+                          handleDelete(data);
                         },
                         icon: const Icon(Icons.delete, color: Colors.white),
                         label: const Text("Delete", style: TextStyle(color: Colors.white)),
@@ -140,7 +197,6 @@ class _AllCashInState extends State<AllCashIn> {
                         ),
                       ),
                     )
-
                   ],
                 ),
               )
@@ -183,69 +239,79 @@ class _AllCashInState extends State<AllCashIn> {
       title: "Cash In",
       currentRoute: '/cashin',
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCashIn()),);
+        onPressed: () async{
+          final shouldReload = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddCashIn()),
+          );
+          if (shouldReload == true) {
+            await loadCashIn();
+          }
         },
+
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white,),
       ),
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        itemCount: cashInList.length,
-        separatorBuilder: (context, index) =>
-        const Divider(height: 1, color: Colors.black12),
-        itemBuilder: (context, index) {
-          final item = cashInList[index];
+      child: isLoading ? Center(child: CircularProgressIndicator()) :  RefreshIndicator(
+        onRefresh: () async{await loadCashIn(); },
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          itemCount: cashInList.length,
+          separatorBuilder: (context, index) =>
+          const Divider(height: 1, color: Colors.black12),
+          itemBuilder: (context, index) {
+            final item = cashInList[index];
 
-          return InkWell(
-            onTap: () => showDetailsBottomSheet(item),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            return InkWell(
+              onTap: () => showDetailsBottomSheet(item),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "৳ ${item['amount'].toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            item['account'],
+                            style:
+                            const TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          "৳ ${item['amount'].toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
+                          formatDate(item['date']),
+                          style:
+                          const TextStyle(fontSize: 13, color: Colors.black54),
                         ),
                         SizedBox(height: 4),
-                        Text(
-                          item['account'],
-                          style:
-                          const TextStyle(fontSize: 12, color: Colors.grey),
+                        Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14, color: Colors.grey
                         ),
                       ],
                     ),
-                  ),
-
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        formatDate(item['date']),
-                        style:
-                        const TextStyle(fontSize: 13, color: Colors.black54),
-                      ),
-                      SizedBox(height: 4),
-                      Icon(
-                          Icons.arrow_forward_ios,
-                          size: 14, color: Colors.grey
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

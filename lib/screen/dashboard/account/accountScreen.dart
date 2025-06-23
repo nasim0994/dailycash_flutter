@@ -170,8 +170,14 @@ class AccountsState extends State<Accounts> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddAccount()),);
+        onPressed: () async{
+          final shouldReload = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddAccount()),
+          );
+          if (shouldReload == true) {
+            await loadAccounts();
+          }
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white,),
