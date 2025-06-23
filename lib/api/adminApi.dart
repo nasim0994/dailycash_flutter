@@ -33,3 +33,17 @@ Future<Map>addAccountReq(formValue) async{
   var result = jsonDecode(res.body);
   return result;
 }
+
+
+
+Future<Map>addCashInReq(formValue) async{
+  var URL = Uri.parse("${baseUrl}/cash-in/add");
+  var token = await getStoreData("token");
+  var userId = await getStoreData("_id");
+  formValue["addedBy"] = userId;
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var reqBody = jsonEncode(formValue);
+  var res = await http.post(URL, headers: reqHeader, body:reqBody);
+  var result = jsonDecode(res.body);
+  return result;
+}

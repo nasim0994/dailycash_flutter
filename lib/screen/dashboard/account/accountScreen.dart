@@ -33,6 +33,8 @@ class AccountsState extends State<Accounts> {
       setState(() => isLoading = false);
     }
   }
+
+
   void handleEdit(Map account) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Edit tapped for ${account['name']}')),
