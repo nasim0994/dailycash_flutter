@@ -1,8 +1,8 @@
 
 import 'package:dailycash/screen/dashboard/cashIn/allCashIn.dart';
 import 'package:flutter/material.dart';
-
 import '../screen/dashboard/account/accountScreen.dart';
+import '../screen/dashboard/cashOut/allCashOut.dart';
 import '../screen/dashboard/dashboardScreen.dart';
 
 class AppBottomNavBar extends StatelessWidget {
@@ -39,7 +39,7 @@ class AppBottomNavBar extends StatelessWidget {
             _navigate(context, '/cashin',AllCashIn());
             break;
           case 3:
-            _navigate(context, '/cashout',Dashboard());
+            _navigate(context, '/cashout',AllCashOut());
             break;
         }
       },
