@@ -59,12 +59,12 @@ class LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Get Started With", style: TextStyle(
+                Text("Get Started", style: TextStyle(
                   fontSize: 35,
                   fontWeight: FontWeight.w500
                 ),),
                 SizedBox(height: 2,),
-                Text("Make your easy life your my task app", style: TextStyle(color: Colors.black54),),
+                Text("Make your easy life your my daily cash app", style: TextStyle(color: Colors.black54),),
                 SizedBox(height: 40,),
 
                 TextFormField(decoration: AppInputStyle("Enter email"),
