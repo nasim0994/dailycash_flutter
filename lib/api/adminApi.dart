@@ -5,6 +5,15 @@ import "../utility/sharedPreferences.dart";
 
 var baseUrl = "https://api.dailycash.nasimuddin.me/api";
 
+Future<Map>getBalanceReq() async{
+  var URL = Uri.parse("${baseUrl}/account/balance");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var res = await http.get(URL, headers: reqHeader,);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
 
 Future<Map>getAccountReq() async{
   var URL = Uri.parse("${baseUrl}/account/all");

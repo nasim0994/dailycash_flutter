@@ -37,7 +37,7 @@ class _AllCashInState extends State<AllCashIn> {
 
   String formatDate(String date) {
     DateTime parsedDate = DateTime.parse(date);
-    return DateFormat('dd - MM - yy').format(parsedDate);
+    return DateFormat('dd MMM yyyy').format(parsedDate);
   }
 
   Future<void> handleDelete(Map cashIn) async {
