@@ -46,21 +46,21 @@ class _AddAccountState extends State<AddAccount> {
     String? accountHolderName = FormValue["accountHolderName"];
 
     if (name == null || name.trim().isEmpty) {
-      showErrorToast("Name is required");
+      showErrorToast(context,"Name is required");
     } else if (type == null || type.trim().isEmpty) {
-      showErrorToast("Account Type is required");
+      showErrorToast(context,"Account Type is required");
     } else if (accountNumber == null || accountNumber.trim().isEmpty) {
-      showErrorToast("account Number Type is required");
+      showErrorToast(context,"account Number Type is required");
     } else if (accountHolderName == null || accountHolderName.trim().isEmpty) {
-      showErrorToast("Account Holder Name is required");
+      showErrorToast(context,"Account Holder Name is required");
     } else {
       Map res = await addAccountReq(FormValue);
       if(res["success"] == true){
-        showSuccessToast("Account add success");
+        showSuccessToast(context,"Account add success");
         setState(() => isLoading = false);
         Navigator.pop(context, true);
       }else{
-        showErrorToast(res["message"]);
+        showErrorToast(context,res["message"]);
         setState(() => isLoading = false);
       }
     }

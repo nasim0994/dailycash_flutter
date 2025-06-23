@@ -29,7 +29,7 @@ class AccountsState extends State<Accounts> {
         accountList=res["data"];
       });
     }else{
-      showErrorToast(res["message"]);
+      showErrorToast(context,res["message"]);
       setState(() => isLoading = false);
     }
   }
@@ -65,9 +65,9 @@ class AccountsState extends State<Accounts> {
                     Map res = await deleteAccountReq(account['_id']);
 
                     if (res["success"] == true) {
-                      showSuccessToast("Account delete success");
+                      showSuccessToast(context,"Account delete success");
                     } else {
-                      showErrorToast(res["message"]);
+                      showErrorToast(context,res["message"]);
                     }
 
                     Navigator.pop(context);

@@ -30,7 +30,7 @@ class _AllCashOutState extends State<AllCashOut> {
         cashOutList=res["data"];
       });
     }else{
-      showErrorToast(res["message"]);
+      showErrorToast(context,res["message"]);
       setState(() => isLoading = false);
     }
   }
@@ -65,14 +65,14 @@ class _AllCashOutState extends State<AllCashOut> {
                     Map res = await deleteCashOutReq(cashOut['_id']);
 
                     if (res["success"] == true) {
-                      showSuccessToast("cashOut deleted");
+                      showSuccessToast(context,"cashOut deleted");
                       setState(() {
                         cashOutList.removeWhere((item) => item["_id"] == cashOut["_id"]);
                       });
                       Navigator.pop(context);
                       Navigator.pop(context);
                     } else {
-                      showErrorToast(res["message"]);
+                      showErrorToast(context,res["message"]);
                       setStateDialog(() => isDeleteLoading = false);
                     }
                   },

@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 SvgPicture ScreenBackground(context){
@@ -62,24 +60,26 @@ PinTheme AppPinThemeStyel(){
 }
 
 
-void showSuccessToast(String msg) {
-  Fluttertoast.showToast(
-    msg: msg,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.TOP,
-    backgroundColor: Colors.green.shade600,
-    textColor: Colors.white,
-    fontSize: 16.0,
+void showSuccessToast(BuildContext context, String msg) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(msg),
+      backgroundColor: Colors.green.shade600,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    ),
   );
 }
 
-void showErrorToast(String msg) {
-  Fluttertoast.showToast(
-    msg: msg,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.TOP,
-    backgroundColor: Colors.red.shade600,
-    textColor: Colors.white,
-    fontSize: 16.0,
+void showErrorToast(BuildContext context, String msg) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(msg),
+      backgroundColor: Colors.red.shade600,
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    ),
   );
 }

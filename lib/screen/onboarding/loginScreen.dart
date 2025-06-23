@@ -24,23 +24,27 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   handleLogin()async{
+    print("start");
     setState(() => isLoading = true);
     String? email = FormValue["email"];
     String? password = FormValue["password"];
 
+    print("email $email password $password");
+
     if (email == null || email.trim().isEmpty) {
-      showErrorToast("Email is required");
+      showErrorToast(context,"Email is required");
     } else if (password == null || password.trim().isEmpty) {
-      showErrorToast("Password is required");
+      showErrorToast(context,"Password is required");
     } else {
       Map res = await LoginReq(FormValue);
+      print(res);
       if(res["success"] == true){
-        showSuccessToast("Login success");
+        showSuccessToast(context,"Login success");
         storeLoggedUserData(res["data"]);
         setState(() => isLoading = false);
         Navigator.pushNamedAndRemoveUntil(context, "/dashboard", (route)=>false);
       }else{
-        showErrorToast(res["message"]);
+        showErrorToast(context,res["message"]);
         setState(() => isLoading = false);
       }
     }

@@ -30,7 +30,7 @@ class _AllCashInState extends State<AllCashIn> {
         cashInList=res["data"];
       });
     }else{
-      showErrorToast(res["message"]);
+      showErrorToast(context,res["message"]);
       setState(() => isLoading = false);
     }
   }
@@ -65,14 +65,14 @@ class _AllCashInState extends State<AllCashIn> {
                     Map res = await deleteCashInReq(cashIn['_id']);
 
                     if (res["success"] == true) {
-                      showSuccessToast("CashIn deleted");
+                      showSuccessToast(context,"CashIn deleted");
                       setState(() {
                         cashInList.removeWhere((item) => item["_id"] == cashIn["_id"]);
                       });
                       Navigator.pop(context);
                       Navigator.pop(context);
                     } else {
-                      showErrorToast(res["message"]);
+                      showErrorToast(context,res["message"]);
                       setStateDialog(() => isDeleteLoading = false);
                     }
                   },

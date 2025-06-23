@@ -42,7 +42,7 @@ class _EditCashInState extends State<EditCashIn> {
         accountLists=res["data"];
       });
     }else{
-      showErrorToast(res["message"]);
+      showErrorToast(context,res["message"]);
     }
   }
 
@@ -63,7 +63,7 @@ class _EditCashInState extends State<EditCashIn> {
         noteController.text = data["note"] ? data["note"].toString() : "";
       });
     } else {
-      showErrorToast(res["message"]);
+      showErrorToast(context,res["message"]);
       print(res);
     }
     setState(() => isLoading = false);
@@ -88,19 +88,19 @@ class _EditCashInState extends State<EditCashIn> {
     String? account = FormValue["account"];
 
     if (date == null || date.trim().isEmpty) {
-      showErrorToast("Date is required");
+      showErrorToast(context,"Date is required");
     } else if (amount <= 0) {
-      showErrorToast("Amount must be greater than 0");
+      showErrorToast(context,"Amount must be greater than 0");
     } else if (account == null || account.trim().isEmpty) {
-      showErrorToast("Account Type is required");
+      showErrorToast(context,"Account Type is required");
     } else {
       Map res = await editCashInReq(widget.cashInId,FormValue);
       if(res["success"] == true){
-        showSuccessToast("CashIn add success");
+        showSuccessToast(context,"CashIn add success");
         setState(() => isBtnLoading = false);
         Navigator.pop(context, true);
       }else{
-        showErrorToast(res["message"]);
+        showErrorToast(context,res["message"]);
         setState(() => isBtnLoading = false);
       }
     }
