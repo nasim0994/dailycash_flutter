@@ -118,10 +118,11 @@ class _AllCashInState extends State<AllCashIn> {
                 spacing: 10,
                 runSpacing: 10,
                 children: [
-                  _buildGridItem("Account", "${data["account"]}"),
-                  _buildGridItem("Date", "08:15pm ${DateFormat('dd/MM/yy').format(DateTime.parse(data["date"]))}"),
+                  _buildGridItem("Account", "${data["account"]["name"]}"),
+                  _buildGridItem("Account Type", "${data["account"]["type"]}"),
+                  _buildGridItem("Date", "${DateFormat('dd MMM yyyy').format(DateTime.parse(data["date"]))}"),
                   _buildGridItem("Amount", "৳${data["amount"].toStringAsFixed(2)}"),
-                  _buildGridItem("চার্জ", "৳240.50"),
+
                 ],
               ),
 
@@ -139,10 +140,10 @@ class _AllCashInState extends State<AllCashIn> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Note", style: TextStyle(color: Colors.grey)),
-                      SizedBox(height: 6),
-                      Text("CFM94E95F7", style: TextStyle(fontWeight: FontWeight.bold)),
+                    children: [
+                      const Text("Note", style: TextStyle(color: Colors.grey)),
+                      const SizedBox(height: 6),
+                      Text("${data["note"]}", style: const TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -282,7 +283,7 @@ class _AllCashInState extends State<AllCashIn> {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            item['account'],
+                            item['account']["name"],
                             style:
                             const TextStyle(fontSize: 12, color: Colors.grey),
                           ),

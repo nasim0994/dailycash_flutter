@@ -20,6 +20,7 @@ class _EditCashInState extends State<EditCashIn> {
     "note":"",
   };
 
+  bool isBtnLoading = false;
   bool isLoading = false;
   String? selectedValue;
   TextEditingController dateController = TextEditingController();
@@ -53,10 +54,10 @@ class _EditCashInState extends State<EditCashIn> {
       setState(() {
         FormValue["date"] = data["date"];
         FormValue["amount"] = data["amount"];
-        FormValue["account"] = data["account"];
+        FormValue["account"] = data["account"]["_id"];
         FormValue["note"] = data["note"];
 
-        selectedValue = data["account"];
+        selectedValue = data["account"]["_id"];
         dateController.text = DateFormat('dd MMM yyyy').format(DateTime.parse(data["date"]));
         amountController.text = data["amount"].toString();
         noteController.text = data["note"] ? data["note"].toString() : "";
@@ -81,8 +82,7 @@ class _EditCashInState extends State<EditCashIn> {
   }
 
   void handleFormSubmit()async{
-    print(FormValue);
-    setState(() => isLoading = true);
+    setState(() => isBtnLoading = true);
     String? date = FormValue["date"];
     int amount = FormValue["amount"];
     String? account = FormValue["account"];
@@ -97,14 +97,14 @@ class _EditCashInState extends State<EditCashIn> {
       Map res = await editCashInReq(widget.cashInId,FormValue);
       if(res["success"] == true){
         showSuccessToast("CashIn add success");
-        setState(() => isLoading = false);
+        setState(() => isBtnLoading = false);
         Navigator.pop(context, true);
       }else{
         showErrorToast(res["message"]);
-        setState(() => isLoading = false);
+        setState(() => isBtnLoading = false);
       }
     }
-    setState(() => isLoading = false);
+    setState(() => isBtnLoading = false);
   }
 
   @override
@@ -173,9 +173,9 @@ class _EditCashInState extends State<EditCashIn> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: isLoading ? null : (){handleFormSubmit();},
+                  onPressed: isBtnLoading ? null : (){handleFormSubmit();},
                   style: AppBtnStyle(),
-                  child: isLoading  ?
+                  child: isBtnLoading  ?
                   SizedBox(
                     width: 18,
                     height: 18,
