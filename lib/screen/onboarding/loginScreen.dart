@@ -90,44 +90,6 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                   ) : Text("Login"),),
                 ),
-
-                SizedBox(height: 70,),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: (){Navigator.pushNamed(context, "/forget");},
-                        child: Text("Forget Password?", style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.black54,
-                        ),),
-                      ),
-                      SizedBox(height: 5,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Don't have account?", style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.black54,
-                          ),),
-                          SizedBox(width: 4,),
-                          InkWell(
-                            onTap: (){Navigator.pushNamed(context, "/register");},
-                              child: Text("Sign up", style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.blue,
-                              ),),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-
               ],
             ),
           )
