@@ -1,6 +1,6 @@
-# taskapp
+# dailycash
 
-A new Flutter Taskapp.
+Simple Income & Expense Tracker
 
 ## Getting Started
 

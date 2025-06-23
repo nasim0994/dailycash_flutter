@@ -1,4 +1,4 @@
-package com.taskapp.taskapp
+package com.dailycash.dailycash
 
 import io.flutter.embedding.android.FlutterActivity
 
