@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utility/sharedPreferences.dart';
 import 'appBottomNavBar.dart';
 
 
@@ -26,7 +27,13 @@ class AppLayout extends StatelessWidget {
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.logout))
+          IconButton(
+              onPressed: ()async{
+                await clearLoggedUserData();
+                Navigator.pushNamedAndRemoveUntil(context, "/login", (route)=>false);
+                },
+              icon: Icon(Icons.logout)
+          )
         ],
       ),
       body: child,
