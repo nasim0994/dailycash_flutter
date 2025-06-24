@@ -24,6 +24,25 @@ Future<Map>getAccountReq() async{
   return result;
 }
 
+Future<Map>getAccountByReq(id) async{
+  var URL = Uri.parse("${baseUrl}/account/$id");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var res = await http.get(URL, headers: reqHeader,);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
+Future<Map>editAccountReq(id,formValue) async{
+  var URL = Uri.parse("${baseUrl}/account/update/$id");
+  var token = await getStoreData("token");
+  var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
+  var reqBody = jsonEncode(formValue);
+  var res = await http.put(URL, headers: reqHeader, body:reqBody);
+  var result = jsonDecode(res.body);
+  return result;
+}
+
 Future<Map>deleteAccountReq(id) async{
   var URL = Uri.parse("${baseUrl}/account/delete/$id");
   var token = await getStoreData("token");

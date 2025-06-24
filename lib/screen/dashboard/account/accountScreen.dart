@@ -1,3 +1,4 @@
+import 'package:dailycash/screen/dashboard/account/editAccount.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../api/adminApi.dart';
@@ -35,10 +36,19 @@ class AccountsState extends State<Accounts> {
   }
 
 
-  void handleEdit(Map account) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit tapped for ${account['name']}')),
+  void handleEdit(Map account) async{
+    final shouldReload = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditAccount(
+          accountId: account["_id"],
+        ),
+      ),
     );
+
+    if(shouldReload == true){
+      await loadAccounts();
+    }
   }
   Future<void> handleDelete(Map account) async {
     bool isDeleteLoading = false;
@@ -56,24 +66,26 @@ class AccountsState extends State<Accounts> {
               actions: isDeleteLoading
                   ? []
                   : [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel")),
-                TextButton(
-                  onPressed: () async {
-                    setStateDialog(() => isDeleteLoading = true);
-                    Map res = await deleteAccountReq(account['_id']);
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel")
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        setStateDialog(() => isDeleteLoading = true);
+                        Map res = await deleteAccountReq(account['_id']);
 
-                    if (res["success"] == true) {
-                      showSuccessToast(context,"Account delete success");
-                    } else {
-                      showErrorToast(context,res["message"]);
-                    }
+                        if (res["success"] == true) {
+                          showSuccessToast(context,"Account delete success");
+                          await loadAccounts();
+                        } else {
+                          showErrorToast(context,res["message"]);
+                        }
 
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Delete", style: TextStyle(color: Colors.red)),
-                ),
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                    ),
               ],
             );
           },
@@ -87,7 +99,21 @@ class AccountsState extends State<Accounts> {
     return AppLayout(
       title: "Accounts",
       currentRoute: '/accounts',
-      child: isLoading ? Center(child: CircularProgressIndicator()) : RefreshIndicator(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async{
+          final shouldReload = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddAccount()),
+          );
+          if (shouldReload == true) {
+            await loadAccounts();
+          }
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add, color: Colors.white,),
+      ),
+      child: isLoading ? Center(child: CircularProgressIndicator()) :
+      RefreshIndicator(
         onRefresh: () async{await loadAccounts(); },
         child: ListView.builder(
           padding: const EdgeInsets.all(10),
@@ -168,19 +194,6 @@ class AccountsState extends State<Accounts> {
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-          final shouldReload = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddAccount()),
-          );
-          if (shouldReload == true) {
-            await loadAccounts();
-          }
-        },
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add, color: Colors.white,),
       ),
     );
   }
