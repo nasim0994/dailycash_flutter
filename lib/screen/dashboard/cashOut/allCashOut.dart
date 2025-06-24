@@ -4,6 +4,7 @@ import 'package:dailycash/screen/dashboard/cashOut/editCashOutScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:number_pagination/number_pagination.dart';
+import '../../../components/DateRangeFilter.dart';
 import '../../../layout/AppLayout.dart';
 import '../../../style/commonStyle.dart';
 
@@ -14,6 +15,11 @@ class AllCashOut extends StatefulWidget {
 }
 
 class _AllCashOutState extends State<AllCashOut> {
+  final now = DateTime.now();
+  late DateTime? startDate;
+  late DateTime? endDate;
+  String selectedLabel = 'This Week';
+
   var page = 1;
   var limit = 50;
   var totalPages = 0;
@@ -23,11 +29,15 @@ class _AllCashOutState extends State<AllCashOut> {
   @override
   void initState(){
     super.initState();
+    final thisWeekStart = now.subtract(Duration(days: now.weekday - 1));
+    final thisWeekEnd = now;
+    startDate = DateTime(thisWeekStart.year, thisWeekStart.month, thisWeekStart.day);
+    endDate = DateTime(thisWeekEnd.year, thisWeekEnd.month, thisWeekEnd.day);
     loadCashOut();
   }
 
   Future<void>loadCashOut()async{
-    Map res = await getCashOutReq(page, limit);
+    Map res = await getCashOutReq(page, limit, startDate, endDate);
     if(res["success"] == true){
       setState(() {
         isLoading = false;
@@ -262,6 +272,18 @@ class _AllCashOutState extends State<AllCashOut> {
         onRefresh: () async{await loadCashOut(); },
         child: Column(
           children: [
+            DateRangeFilter(
+              initialStartDate: startDate,
+              initialEndDate: endDate,
+              onChange: (start, end, label) {
+                setState(() {
+                  startDate = start;
+                  endDate = end;
+                  selectedLabel = label;
+                });
+                loadCashOut();
+              },
+            ),
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -322,7 +344,6 @@ class _AllCashOutState extends State<AllCashOut> {
                 },
               ),
             ),
-
             if (totalPages > 1)
               Container(
                 child: NumberPagination(

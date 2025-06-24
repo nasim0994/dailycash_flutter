@@ -4,6 +4,7 @@ import 'package:dailycash/screen/dashboard/cashIn/editCashInScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:number_pagination/number_pagination.dart';
+import '../../../components/DateRangeFilter.dart';
 import '../../../layout/AppLayout.dart';
 import '../../../style/commonStyle.dart';
 
@@ -14,22 +15,31 @@ class AllCashIn extends StatefulWidget {
 }
 
 class _AllCashInState extends State<AllCashIn> {
+  final now = DateTime.now();
+  late DateTime? startDate;
+  late DateTime? endDate;
+  String selectedLabel = 'This Week';
+
   var page = 1;
   var limit = 50;
   var totalPages = 0;
   List cashInList = [];
   bool isLoading = true;
 
+
   @override
   void initState(){
     super.initState();
+    final thisWeekStart = now.subtract(Duration(days: now.weekday - 1));
+    final thisWeekEnd = now;
+    startDate = DateTime(thisWeekStart.year, thisWeekStart.month, thisWeekStart.day);
+    endDate = DateTime(thisWeekEnd.year, thisWeekEnd.month, thisWeekEnd.day);
     loadCashIn();
   }
 
   Future<void>loadCashIn()async{
-    Map res = await getCashInReq(page, limit);
+    Map res = await getCashInReq(page, limit, startDate, endDate);
     if(res["success"] == true){
-      print(res);
       setState(() {
         isLoading = false;
         totalPages=res["meta"]["pages"];
@@ -264,6 +274,19 @@ class _AllCashInState extends State<AllCashIn> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            DateRangeFilter(
+              initialStartDate: startDate,
+              initialEndDate: endDate,
+              onChange: (start, end, label) {
+                setState(() {
+                  startDate = start;
+                  endDate = end;
+                  selectedLabel = label;
+                });
+                loadCashIn();
+              },
+            ),
+
             Expanded(
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -323,7 +346,6 @@ class _AllCashInState extends State<AllCashIn> {
               ),
             ),
 
-
             if (totalPages > 1)
               Container(
                 child: NumberPagination(
@@ -339,7 +361,6 @@ class _AllCashInState extends State<AllCashIn> {
                   currentPage: page,
                 ),
               ),
-
           ],
         ),
       ),
