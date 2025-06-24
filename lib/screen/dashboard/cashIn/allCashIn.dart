@@ -3,6 +3,7 @@ import 'package:dailycash/screen/dashboard/cashIn/addCashInScreen.dart';
 import 'package:dailycash/screen/dashboard/cashIn/editCashInScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:number_pagination/number_pagination.dart';
 import '../../../layout/AppLayout.dart';
 import '../../../style/commonStyle.dart';
 
@@ -13,6 +14,9 @@ class AllCashIn extends StatefulWidget {
 }
 
 class _AllCashInState extends State<AllCashIn> {
+  var page = 1;
+  var limit = 50;
+  var totalPages = 0;
   List cashInList = [];
   bool isLoading = true;
 
@@ -23,10 +27,12 @@ class _AllCashInState extends State<AllCashIn> {
   }
 
   Future<void>loadCashIn()async{
-    Map res = await getCashInReq();
+    Map res = await getCashInReq(page, limit);
     if(res["success"] == true){
+      print(res);
       setState(() {
         isLoading = false;
+        totalPages=res["meta"]["pages"];
         cashInList=res["data"];
       });
     }else{
@@ -255,63 +261,86 @@ class _AllCashInState extends State<AllCashIn> {
       ),
       child: isLoading ? Center(child: CircularProgressIndicator()) :  RefreshIndicator(
         onRefresh: () async{await loadCashIn(); },
-        child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          itemCount: cashInList.length,
-          separatorBuilder: (context, index) =>
-          const Divider(height: 1, color: Colors.black12),
-          itemBuilder: (context, index) {
-            final item = cashInList[index];
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                itemCount: cashInList.length,
+                separatorBuilder: (context, index) =>
+                const Divider(height: 1, color: Colors.black12),
+                itemBuilder: (context, index) {
+                  final item = cashInList[index];
 
-            return InkWell(
-              onTap: () => showDetailsBottomSheet(item),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  return InkWell(
+                    onTap: () => showDetailsBottomSheet(item),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
                         children: [
-                          Text(
-                            "৳ ${item['amount'].toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "৳ ${item['amount'].toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  item['account']["name"],
+                                  style:
+                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            item['account']["name"],
-                            style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                formatDate(item['date']),
+                                style:
+                                const TextStyle(fontSize: 13, color: Colors.black54),
+                              ),
+                              SizedBox(height: 4),
+                              Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 14, color: Colors.grey
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
+                  );
+                },
+              ),
+            ),
 
 
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          formatDate(item['date']),
-                          style:
-                          const TextStyle(fontSize: 13, color: Colors.black54),
-                        ),
-                        SizedBox(height: 4),
-                        Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14, color: Colors.grey
-                        ),
-                      ],
-                    ),
-                  ],
+            if (totalPages > 1)
+              Container(
+                child: NumberPagination(
+                  onPageChanged: (int pageNumber) async {
+                    setState(() {
+                      page = pageNumber;
+                      isLoading = true;
+                    });
+                    await loadCashIn();
+                  },
+                  visiblePagesCount: 5,
+                  totalPages: totalPages,
+                  currentPage: page,
                 ),
               ),
-            );
-          },
+
+          ],
         ),
       ),
     );

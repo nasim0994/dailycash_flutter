@@ -3,6 +3,7 @@ import 'package:dailycash/screen/dashboard/cashOut/addCashOutScreen.dart';
 import 'package:dailycash/screen/dashboard/cashOut/editCashOutScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:number_pagination/number_pagination.dart';
 import '../../../layout/AppLayout.dart';
 import '../../../style/commonStyle.dart';
 
@@ -13,6 +14,9 @@ class AllCashOut extends StatefulWidget {
 }
 
 class _AllCashOutState extends State<AllCashOut> {
+  var page = 1;
+  var limit = 50;
+  var totalPages = 0;
   List cashOutList = [];
   bool isLoading = true;
 
@@ -23,10 +27,11 @@ class _AllCashOutState extends State<AllCashOut> {
   }
 
   Future<void>loadCashOut()async{
-    Map res = await getCashOutReq();
+    Map res = await getCashOutReq(page, limit);
     if(res["success"] == true){
       setState(() {
         isLoading = false;
+        totalPages=res["meta"]["pages"];
         cashOutList=res["data"];
       });
     }else{
@@ -255,63 +260,85 @@ class _AllCashOutState extends State<AllCashOut> {
       ),
       child: isLoading ? Center(child: CircularProgressIndicator()) :  RefreshIndicator(
         onRefresh: () async{await loadCashOut(); },
-        child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          itemCount: cashOutList.length,
-          separatorBuilder: (context, index) =>
-          const Divider(height: 1, color: Colors.black12),
-          itemBuilder: (context, index) {
-            final item = cashOutList[index];
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                itemCount: cashOutList.length,
+                separatorBuilder: (context, index) =>
+                const Divider(height: 1, color: Colors.black12),
+                itemBuilder: (context, index) {
+                  final item = cashOutList[index];
 
-            return InkWell(
-              onTap: () => showDetailsBottomSheet(item),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  return InkWell(
+                    onTap: () => showDetailsBottomSheet(item),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
                         children: [
-                          Text(
-                            "৳ ${item['amount'].toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "৳ ${item['amount'].toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  item['account']["name"],
+                                  style:
+                                  const TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            item['account']["name"],
-                            style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                formatDate(item['date']),
+                                style:
+                                const TextStyle(fontSize: 13, color: Colors.black54),
+                              ),
+                              SizedBox(height: 4),
+                              Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 14, color: Colors.grey
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
+                  );
+                },
+              ),
+            ),
 
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          formatDate(item['date']),
-                          style:
-                          const TextStyle(fontSize: 13, color: Colors.black54),
-                        ),
-                        SizedBox(height: 4),
-                        Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14, color: Colors.grey
-                        ),
-                      ],
-                    ),
-                  ],
+            if (totalPages > 1)
+              Container(
+                child: NumberPagination(
+                  onPageChanged: (int pageNumber) async {
+                    setState(() {
+                      page = pageNumber;
+                      isLoading = true;
+                    });
+                    await loadCashOut();
+                  },
+                  visiblePagesCount: 5,
+                  totalPages: totalPages,
+                  currentPage: page,
                 ),
               ),
-            );
-          },
+          ],
         ),
       ),
     );

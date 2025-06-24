@@ -57,8 +57,8 @@ Future<Map>addCashInReq(formValue) async{
   return result;
 }
 
-Future<Map>getCashInReq() async{
-  var URL = Uri.parse("${baseUrl}/cash-in/all");
+Future<Map>getCashInReq(page,limit) async{
+  var URL = Uri.parse("${baseUrl}/cash-in/all?page=$page&limit=$limit");
   var token = await getStoreData("token");
   var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
   var res = await http.get(URL, headers: reqHeader);
@@ -111,8 +111,8 @@ Future<Map>addCashOutReq(formValue) async{
   return result;
 }
 
-Future<Map>getCashOutReq() async{
-  var URL = Uri.parse("${baseUrl}/cash-out/all");
+Future<Map>getCashOutReq(page,limit) async{
+  var URL = Uri.parse("${baseUrl}/cash-out/all?page=$page&limit=$limit");
   var token = await getStoreData("token");
   var reqHeader = {"Content-Type":"application/json", "Authorization": "Bearer $token",};
   var res = await http.get(URL, headers: reqHeader);
