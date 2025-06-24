@@ -36,7 +36,17 @@ class AppLayout extends StatelessWidget {
           )
         ],
       ),
-      body: child,
+      body: Stack(
+        children: [
+          Positioned.fill(
+          child: Image.asset(
+            'assets/images/screen_bg.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+          child
+        ],
+      ),
       bottomNavigationBar: AppBottomNavBar(currentRoute: currentRoute),
       floatingActionButton: floatingActionButton,
     );

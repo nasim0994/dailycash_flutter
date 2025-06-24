@@ -56,7 +56,13 @@ class LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          ScreenBackground(context),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/screen_bg.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+
           Container(
             padding: EdgeInsets.all(30),
             child: Column(

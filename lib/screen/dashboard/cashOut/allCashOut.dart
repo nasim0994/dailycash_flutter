@@ -295,8 +295,20 @@ class _AllCashOutState extends State<AllCashOut> {
 
                   return InkWell(
                     onTap: () => showDetailsBottomSheet(item),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            blurRadius: 3,
+                            offset: Offset(0, 1),
+                          )
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      margin: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
                         children: [
                           Expanded(

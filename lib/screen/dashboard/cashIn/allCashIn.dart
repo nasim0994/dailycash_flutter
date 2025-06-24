@@ -289,17 +289,30 @@ class _AllCashInState extends State<AllCashIn> {
 
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.all(10),
                 itemCount: cashInList.length,
                 separatorBuilder: (context, index) =>
-                const Divider(height: 1, color: Colors.black12),
+                const Divider(height: 0, color: Colors.transparent),
                 itemBuilder: (context, index) {
                   final item = cashInList[index];
 
                   return InkWell(
                     onTap: () => showDetailsBottomSheet(item),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            blurRadius: 3,
+                            offset: Offset(0, 1),
+                          )
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      // padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
                         children: [
                           Expanded(

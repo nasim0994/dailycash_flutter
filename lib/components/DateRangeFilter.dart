@@ -138,10 +138,11 @@ class _DateRangeFilterState extends State<DateRangeFilter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: widget.margin ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: widget.margin ?? const EdgeInsets.fromLTRB(10, 10, 10, 0),
       padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: widget.decoration ??
           BoxDecoration(
+            color: Colors.white,
             border: Border.all(color: Colors.grey.shade400),
             borderRadius: BorderRadius.circular(8),
           ),
