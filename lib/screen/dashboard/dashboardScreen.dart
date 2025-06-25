@@ -80,62 +80,140 @@ class DashboardState extends State<Dashboard> {
           ),
 
           // Accounts Grid
+          // Expanded(
+          //   child: Padding(
+          //     padding: const EdgeInsets.symmetric(horizontal: 10),
+          //     child: GridView.builder(
+          //       itemCount: accounts.length,
+          //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //         crossAxisCount: 2,
+          //         childAspectRatio: 1.7,
+          //         crossAxisSpacing: 8,
+          //         mainAxisSpacing: 8,
+          //       ),
+          //       itemBuilder: (_, index) {
+          //         final account = accounts[index];
+          //         return Container(
+          //           padding: const EdgeInsets.all(14),
+          //           decoration: BoxDecoration(
+          //             color: Colors.white,
+          //             border: Border.all(color: Colors.grey.shade300),
+          //             borderRadius: BorderRadius.circular(10),
+          //             boxShadow: [
+          //               BoxShadow(
+          //                 color: Colors.black.withOpacity(0.03),
+          //                 blurRadius: 5,
+          //                 offset: const Offset(0, 2),
+          //               )
+          //             ],
+          //           ),
+          //           child: Column(
+          //             crossAxisAlignment: CrossAxisAlignment.start,
+          //             children: [
+          //               Text(
+          //                 account["name"],
+          //                 style: const TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   fontSize: 16,
+          //                 ),
+          //               ),
+          //               Text(
+          //                 account["type"],
+          //                 style: const TextStyle(color: Colors.grey),
+          //               ),
+          //               Spacer(),
+          //               Text(
+          //                 "৳ ${account["balance"].toStringAsFixed(2)}",
+          //                 style: const TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   fontSize: 18,
+          //                   color: Colors.green,
+          //                 ),
+          //               )
+          //             ],
+          //           ),
+          //         );
+          //       },
+          //     ),
+          //   ),
+          // )
+
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                itemCount: accounts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.7,
-                  crossAxisSpacing: 10,
-                ),
-                itemBuilder: (_, index) {
-                  final account = accounts[index];
-                  return Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 5,
-                          offset: const Offset(0, 2),
-                        )
-                      ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                int crossAxisCount;
+
+                if (constraints.maxWidth >= 1200) {
+                  crossAxisCount = 6;
+                }else if (constraints.maxWidth >= 1024) {
+                  crossAxisCount = 5;
+                }else if (constraints.maxWidth >= 800) {
+                  crossAxisCount = 4;
+                } else if (constraints.maxWidth >= 600) {
+                  crossAxisCount = 3;
+                } else {
+                  crossAxisCount = 2;
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: GridView.builder(
+                    itemCount: accounts.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      childAspectRatio: 1.8,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          account["name"],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                    itemBuilder: (_, index) {
+                      final account = accounts[index];
+                      return Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 5,
+                              offset: const Offset(0, 2),
+                            )
+                          ],
                         ),
-                        Text(
-                          account["type"],
-                          style: const TextStyle(color: Colors.grey),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              account["name"],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              account["type"],
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            const Spacer(),
+                            Text(
+                              "৳ ${account["balance"].toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.green,
+                              ),
+                            )
+                          ],
                         ),
-                        Spacer(),
-                        Text(
-                          "৳ ${account["balance"].toStringAsFixed(2)}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.green,
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-          )
+          ),
+
         ],
       ),
     );

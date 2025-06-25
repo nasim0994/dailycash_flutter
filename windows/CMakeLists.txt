@@ -1,6 +1,7 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
 project(dailycash LANGUAGES CXX)
+set(WINDOWS_APP_ICON_RESOURCE_WINDOWS "resources/app_icon.ico")
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
